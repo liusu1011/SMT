@@ -568,15 +568,16 @@ void list_framework(Z3_context ctx)
     Z3_func_decl  proj_decls[3];
     Z3_func_decl get_place0_decl, get_place1_decl, get_place2_decl;
 
+    Z3_ast zero  = mk_int(ctx, 0);
+	Z3_ast one = mk_int(ctx, 1);
+	Z3_ast ten  = mk_int(ctx, 10);
+
     //declaration for building list datatype
     Z3_func_decl nil_decl, is_nil_decl, cons_decl, is_cons_decl, head_decl, tail_decl;
 
     LOG_MSG("build a list_framework");
 	printf("\nbuild a list_framework\n");
 
-
-    Z3_ast zero  = mk_int(ctx, 0);
-	Z3_ast one = mk_int(ctx, 1);
 	//build a state tuple as a sort
 
 
@@ -606,8 +607,8 @@ void list_framework(Z3_context ctx)
 			Z3_ast is_cons_states = mk_unary_app(ctx, is_cons_decl, states); //is cons(states)
 
 			Z3_ast head = mk_unary_app(ctx, head_decl, states);// states list head
-			Z3_ast head_place0 = mk_unary_app(ctx, get_place0_decl, head); // PN_List's head-> tuple's 'place2'
-			Z3_ast head_place1 = mk_unary_app(ctx, get_place1_decl, head); // PN_List's head-> tuple's 'place2'
+			Z3_ast head_place0 = mk_unary_app(ctx, get_place0_decl, head); // PN_List's head-> tuple's 'place0'
+			Z3_ast head_place1 = mk_unary_app(ctx, get_place1_decl, head); // PN_List's head-> tuple's 'place1'
 			Z3_ast head_place2 = mk_unary_app(ctx, get_place2_decl, head); // PN_List's head-> tuple's 'place2'
 
 			//initial condition
@@ -632,7 +633,7 @@ void list_framework(Z3_context ctx)
 						Z3_func_decl check_tr =
 								Z3_mk_func_decl(ctx, check_tr_func_symbol, domain_size, check_tr_arg_sorts, check_tr_return_sort);
 
-						//forall axiom
+						//forall axiom elements
 						Z3_ast x = Z3_mk_bound(ctx, 0, pn_list); // x is list variable in quantifier
 						Z3_ast check_tr_x = Z3_mk_app(ctx, check_tr, 1, &x);
 						Z3_pattern pattern = Z3_mk_pattern(ctx, 1, &check_tr_x); //pattern
@@ -641,6 +642,9 @@ void list_framework(Z3_context ctx)
 						Z3_ast head_x = mk_unary_app(ctx, head_decl, x);// x's head
 						Z3_ast head_x_place2 = mk_unary_app(ctx, get_place2_decl, head_x);
 						Z3_ast head_gt_zero = Z3_mk_gt(ctx, head_x_place2, zero);
+						Z3_ast head_lt_ten = Z3_mk_lt(ctx, head_x_place2, ten);
+						Z3_ast toCAnd[2] = {head_gt_zero, head_lt_ten};
+						Z3_ast head_and_cond = Z3_mk_and(ctx, 2, toCAnd); //10 > headplace2 > 0
 
 //						Z3_bool ite_bool_cond = head_gt_zero;
 						Z3_ast tail_x = mk_unary_app(ctx, tail_decl, x);
@@ -650,12 +654,16 @@ void list_framework(Z3_context ctx)
 						Z3_ast tailhead_plusone = Z3_mk_add(ctx, 2, toSum);
 
 //						Z3_ast tailhead_unchange = Z3_mk_eq(ctx, tail_x_place2, head_x_place2);
-						Z3_ast transition_condition = Z3_mk_ite(ctx, head_gt_zero,
+						Z3_ast transition_condition = Z3_mk_ite(ctx, head_and_cond,
 								Z3_mk_eq(ctx, tail_x_place2, tailhead_plusone),
 								Z3_mk_eq(ctx, tail_x_place2, head_x_place2)); //transition condition
 
-						Z3_ast ten  = Z3_mk_int(ctx, 10, int_sort);
-						Z3_ast error_condition_tail_lt_ten = Z3_mk_lt(ctx, tail_x_place2, ten); //error property ite's condition
+						Z3_ast twelve  = mk_int(ctx, 12);
+						Z3_ast eleven  = mk_int(ctx, 11);
+						Z3_ast nine  = mk_int(ctx, 9);
+						Z3_ast eight  = mk_int(ctx, 8);
+
+						Z3_ast error_condition_tail_lt_ten = Z3_mk_eq(ctx, tail_x_place2, eight); //error property ite's condition
 						Z3_ast tail_tail_lst = mk_unary_app(ctx, tail_decl, tail_x);
 						Z3_ast is_nil_tail = mk_unary_app(ctx, is_nil_decl, tail_tail_lst);
 						Z3_ast is_cons_tail = mk_unary_app(ctx, is_cons_decl, tail_tail_lst);
@@ -676,12 +684,12 @@ void list_framework(Z3_context ctx)
 						Z3_ast check_tr_forall_axiom =
 								Z3_mk_quantifier(ctx, Z3_TRUE, 0, 1, &pattern, 1, &pn_list, &someName, axiomTree);//the body of check_tr
 
-
-
+						Z3_assert_cnstr(ctx, check_tr_forall_axiom);
+						Z3_ast check_tr_states = mk_unary_app(ctx, check_tr, states);
 			//logic context assert
-			Z3_assert_cnstr(ctx, is_cons_states);
-			Z3_assert_cnstr(ctx, initial_condition);
-			Z3_assert_cnstr(ctx, check_tr_forall_axiom);
+			Z3_ast assertAnd[3] = {is_cons_states, initial_condition, check_tr_states};
+			Z3_ast assertCtx = Z3_mk_and(ctx, 3, assertAnd);
+			Z3_assert_cnstr(ctx, assertCtx);
 }
 
 int main() {
@@ -697,7 +705,7 @@ int main() {
     //check contex satisfaction
     check(ctx, Z3_TRUE);
 
-    printf("\nCONTEXT:\n%sEND OF CONTEXT\n", Z3_context_to_string(ctx));
+    printf("\nCONTEXT:\n%s\nEND OF CONTEXT\n", Z3_context_to_string(ctx));
     /* delete logical context */
      Z3_del_context(ctx);
     return 0;
