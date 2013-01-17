@@ -162,8 +162,8 @@ Z3_context mk_context()
     Z3_config  cfg;
     Z3_context ctx;
     cfg = Z3_mk_config();
+    Z3_set_param_value(cfg, "MODEL", "true");
     ctx = mk_context_custom(cfg, error_handler);
-    Z3_del_config(cfg);
     return ctx;
 }
 
@@ -303,6 +303,7 @@ void check(Z3_context ctx, Z3_lbool expected_result)
 {
     Z3_model m      = 0;
     Z3_lbool result = Z3_check_and_get_model(ctx, &m);
+    printf("\nThe checking result is:%i\n", result);
     switch (result) {
     case Z3_L_FALSE:
         printf("unsat\n");
@@ -316,10 +317,11 @@ void check(Z3_context ctx, Z3_lbool expected_result)
         break;
     }
     if (m) {
+//    	printf("\ndelete model.");
         Z3_del_model(ctx, m);
     }
     if (result != expected_result) {
-        exitf("unexpected result");
+//        exitf("unexpected result");
     }
 }
 
@@ -556,7 +558,7 @@ void array_example3()
     Z3_del_context(ctx);
 }
 
-void list_framework(Z3_context ctx)
+void list_framework_first_model(Z3_context ctx)
 {
     //declaration for building state tuple
     Z3_sort int_sort;
@@ -570,13 +572,14 @@ void list_framework(Z3_context ctx)
 
     Z3_ast zero  = mk_int(ctx, 0);
 	Z3_ast one = mk_int(ctx, 1);
+	Z3_ast two = mk_int(ctx, 2);
 	Z3_ast ten  = mk_int(ctx, 10);
 
     //declaration for building list datatype
     Z3_func_decl nil_decl, is_nil_decl, cons_decl, is_cons_decl, head_decl, tail_decl;
 
     LOG_MSG("build a list_framework");
-	printf("\nbuild a list_framework\n");
+	printf("\nbuild a list_framework: first model\n");
 
 	//build a state tuple as a sort
 
@@ -663,7 +666,149 @@ void list_framework(Z3_context ctx)
 						Z3_ast nine  = mk_int(ctx, 9);
 						Z3_ast eight  = mk_int(ctx, 8);
 
-						Z3_ast error_condition_tail_lt_ten = Z3_mk_eq(ctx, tail_x_place2, eight); //error property ite's condition
+						Z3_ast error_condition_eq_eight = Z3_mk_eq(ctx, tail_x_place2, eight); //error property ite's condition
+//						Z3_ast error_condition_tail_lt_ten = Z3_mk_lt(ctx, tail_x_place2, ten); //error property ite's condition
+
+						Z3_ast tail_tail_lst = mk_unary_app(ctx, tail_decl, tail_x);
+						Z3_ast is_nil_tail = mk_unary_app(ctx, is_nil_decl, tail_tail_lst);
+						Z3_ast is_cons_tail = mk_unary_app(ctx, is_cons_decl, tail_tail_lst);
+						Z3_ast property_axiom = Z3_mk_ite(ctx, error_condition_eq_eight, is_nil_tail, is_cons_tail);//property axiom
+						Z3_ast check_tr_tail_list = mk_unary_app(ctx, check_tr, tail_x); //check_tr(tail(lst));
+
+						Z3_ast is_cons_lst = mk_unary_app(ctx, is_cons_decl, x); //is_cons(lst)
+						Z3_ast is_cons_tail_lst = mk_unary_app(ctx, is_cons_decl, tail_x); //is_cons(tail(lst))
+						Z3_ast toCondAnd[2] = {is_cons_lst, is_cons_tail_lst};
+						Z3_ast axiomTree_cond = Z3_mk_and(ctx, 2, toCondAnd); //(is cons(lst) ^ is cons(tail(lst)))
+						Z3_ast toBigAnd[3] = {transition_condition, check_tr_tail_list, property_axiom};
+						Z3_ast axiomTree_true = Z3_mk_and(ctx, 3, toBigAnd);
+						Z3_ast axiomTree_false = Z3_mk_false(ctx);
+
+						Z3_ast axiomTree =
+								Z3_mk_ite(ctx, axiomTree_cond, axiomTree_true, axiomTree_false);//the big if body in forall axiom
+
+						Z3_ast check_tr_forall_axiom =
+								Z3_mk_quantifier(ctx, Z3_TRUE, 0, 1, &pattern, 1, &pn_list, &someName, axiomTree);//the body of check_tr
+
+						Z3_assert_cnstr(ctx, check_tr_forall_axiom);
+						Z3_ast check_tr_states = mk_unary_app(ctx, check_tr, states);
+			//logic context assert
+			Z3_ast assertAnd[3] = {is_cons_states, initial_condition, check_tr_states};
+			Z3_ast assertCtx = Z3_mk_and(ctx, 3, assertAnd);
+			Z3_assert_cnstr(ctx, assertCtx);
+}
+
+void list_framework_second_model(Z3_context ctx)
+{
+    //declaration for building state tuple
+    Z3_sort int_sort;
+    Z3_sort places_sort;
+    Z3_symbol mk_tuple_name;
+    Z3_symbol proj_names[2];
+    Z3_sort proj_sorts[2];
+    Z3_func_decl  mk_tuple_decl;
+    Z3_func_decl  proj_decls[3];
+    Z3_func_decl get_place0_decl, get_place1_decl;
+
+    Z3_ast default_val = mk_int(ctx, -1);
+    Z3_ast zero  = mk_int(ctx, 0);
+	Z3_ast one = mk_int(ctx, 1);
+	Z3_ast two  = mk_int(ctx, 2);
+	Z3_ast three  = mk_int(ctx, 3);
+	Z3_ast four  = mk_int(ctx, 4);
+	Z3_ast five  = mk_int(ctx, 5);
+
+	Z3_ast ten  = mk_int(ctx, 10);
+	Z3_ast fifteen  = mk_int(ctx, 15);
+	Z3_ast twenty  = mk_int(ctx, 20);
+	Z3_ast twentyfive  = mk_int(ctx, 25);
+	Z3_ast thirty  = mk_int(ctx, 30);
+
+    //declaration for building list datatype
+    Z3_func_decl nil_decl, is_nil_decl, cons_decl, is_cons_decl, head_decl, tail_decl;
+
+    LOG_MSG("build a list_framework");
+	printf("\nbuild a list_framework\n");
+
+	//build a state tuple as a sort
+
+
+			mk_tuple_name = Z3_mk_string_symbol(ctx, "mk_places");
+
+			proj_names[0] = Z3_mk_string_symbol(ctx, "place0");
+			proj_names[1] = Z3_mk_string_symbol(ctx, "place1");
+
+			int_sort = Z3_mk_int_sort(ctx);
+			places_sort = int_sort;
+			proj_sorts[0] = int_sort;
+			proj_sorts[1] = int_sort;
+
+			places_sort = Z3_mk_tuple_sort(ctx, mk_tuple_name, 2, proj_names, proj_sorts, &mk_tuple_decl, proj_decls);
+			get_place0_decl = proj_decls[0];
+			get_place1_decl = proj_decls[1];
+
+
+
+	//build a list with state as an list element
+			Z3_sort pn_list = Z3_mk_list_sort(ctx, Z3_mk_string_symbol(ctx, "pn_list"), places_sort,
+					&nil_decl, &is_nil_decl, &cons_decl, &is_cons_decl, &head_decl, &tail_decl);
+
+
+			//is cons(states)
+			Z3_ast states = mk_var(ctx, "states", pn_list); //declare a new list "PN_List"
+			Z3_ast is_cons_states = mk_unary_app(ctx, is_cons_decl, states); //is cons(states)
+
+			//declare initial state in a list
+			Z3_ast head = mk_unary_app(ctx, head_decl, states);// states list head
+			Z3_ast head_place0 = mk_unary_app(ctx, get_place0_decl, head); // PN_List's head-> tuple's 'place0'
+			Z3_ast head_place1 = mk_unary_app(ctx, get_place1_decl, head); // PN_List's head-> tuple's 'place1'
+
+			//initial condition
+			Z3_ast ini_val_or[5] = {Z3_mk_eq(ctx, head_place0, one), Z3_mk_eq(ctx, head_place0, two),
+					Z3_mk_eq(ctx, head_place0, three), Z3_mk_eq(ctx, head_place0, four),
+					Z3_mk_eq(ctx, head_place0, five)};
+			Z3_ast ini_val_p0 = Z3_mk_and(ctx, 5, ini_val_or);
+			Z3_ast ini_val_p1 = Z3_mk_eq(ctx, head_place1, default_val);
+
+			Z3_ast ini_and[2] = {Z3_mk_eq(ctx, head_place0, ini_val_p0),
+					Z3_mk_eq(ctx, head_place1, ini_val_p1)};
+			Z3_ast initial_condition = Z3_mk_and(ctx, 3, ini_and);
+
+			//define check_transition function
+
+						//function symbol "check_tr"
+						Z3_symbol check_tr_func_symbol = Z3_mk_string_symbol (ctx, "check_tr");
+					    Z3_sort check_tr_arg_sorts[1] = {pn_list};
+
+					    Z3_sort check_tr_return_sort = Z3_mk_bool_sort(ctx);
+					    unsigned domain_size = 1;
+
+						Z3_func_decl check_tr =
+								Z3_mk_func_decl(ctx, check_tr_func_symbol, domain_size, check_tr_arg_sorts, check_tr_return_sort);
+
+						//forall axiom elements
+						Z3_ast x = Z3_mk_bound(ctx, 0, pn_list); // x is list variable in quantifier
+						Z3_ast check_tr_x = Z3_mk_app(ctx, check_tr, 1, &x);
+						Z3_pattern pattern = Z3_mk_pattern(ctx, 1, &check_tr_x); //pattern
+						Z3_symbol someName = Z3_mk_int_symbol(ctx, 0);
+
+						Z3_ast head_x = mk_unary_app(ctx, head_decl, x);// x's head
+						Z3_ast head_x_place0 = mk_unary_app(ctx, get_place0_decl, head_x);
+						Z3_ast head_gt_two = Z3_mk_gt(ctx, head_x_place0, two);//head>2
+
+//						Z3_bool ite_bool_cond = head_gt_zero;
+						Z3_ast tail_x = mk_unary_app(ctx, tail_decl, x);
+						Z3_ast tail_head = mk_unary_app(ctx, head_decl, tail_x);
+						Z3_ast tail_x_place0 = mk_unary_app(ctx, get_place0_decl, tail_head);
+						Z3_ast tail_x_place1 = mk_unary_app(ctx, get_place1_decl, tail_head);
+						Z3_ast toSum[2] = {head_x_place0, one};//head.place2 + 1
+						Z3_ast tailhead_plusone = Z3_mk_add(ctx, 2, toSum);
+
+//						Z3_ast tailhead_unchange = Z3_mk_eq(ctx, tail_x_place2, head_x_place2);
+						Z3_ast transition_condition = Z3_mk_ite(ctx, head_gt_two,
+								Z3_mk_eq(ctx, tail_x_place1, tailhead_plusone),
+								Z3_mk_eq(ctx, tail_x_place0, head_x_place0)); //transition condition
+
+						Z3_ast error_condition_tail_lt_ten = Z3_mk_eq(ctx, tail_x_place1, thirty); //error property ite's condition
 						Z3_ast tail_tail_lst = mk_unary_app(ctx, tail_decl, tail_x);
 						Z3_ast is_nil_tail = mk_unary_app(ctx, is_nil_decl, tail_tail_lst);
 						Z3_ast is_cons_tail = mk_unary_app(ctx, is_cons_decl, tail_tail_lst);
@@ -692,6 +837,28 @@ void list_framework(Z3_context ctx)
 			Z3_assert_cnstr(ctx, assertCtx);
 }
 
+void test_model(Z3_context ctx){
+
+	Z3_ast a = mk_int_var(ctx, "a");
+	Z3_ast five = mk_int(ctx, 5);
+	Z3_ast ten = mk_int(ctx, 10);
+
+
+	LOG_MSG("testing......");
+	printf("\n testing....\n");
+
+//	Z3_ast lt_five = Z3_mk_lt(ctx, a, five);
+	Z3_ast gt_five =  Z3_mk_gt(ctx, a, five);
+	Z3_ast lt_ten =  Z3_mk_lt(ctx, a, ten);
+
+	Z3_ast assertAnd[2] = {gt_five, lt_ten};
+				Z3_ast assertCtx = Z3_mk_and(ctx, 2, assertAnd);
+				Z3_assert_cnstr(ctx, assertCtx);
+}
+
+void test_set_model(Z3_context ctx){
+
+}
 int main() {
 #ifdef LOG_Z3_CALLS
     Z3_open_log("z3.log");
@@ -699,14 +866,19 @@ int main() {
 //    array_example3();
 //    Z3_config cfg = Z3_mk_config();
 //    Z3_set_param_value(cfg, "MODEL", "true");
-        Z3_context ctx;
-    ctx = mk_context();
-    list_framework(ctx);
-    //check contex satisfaction
-    check(ctx, Z3_TRUE);
+    		Z3_config  cfg;
+        	Z3_context ctx;
+         	cfg = Z3_mk_config();
+           Z3_set_param_value(cfg, "MODEL", "true");
+           ctx = mk_context_custom(cfg, error_handler);
+//           test_model(ctx);
+    list_framework_first_model(ctx);
+    //check context satisfaction
+    check(ctx, Z3_L_TRUE);
 
     printf("\nCONTEXT:\n%s\nEND OF CONTEXT\n", Z3_context_to_string(ctx));
     /* delete logical context */
      Z3_del_context(ctx);
+     Z3_del_config(cfg);
     return 0;
 }
