@@ -706,6 +706,11 @@ Z3_ast mk_add(Z3_context ctx, Z3_ast left, Z3_ast right){
 	return Z3_mk_add(ctx, 2, toSum);
 }
 
+Z3_ast mk_sub(Z3_context ctx, Z3_ast left, Z3_ast right){
+	Z3_ast toMinus[2] = {left, right};
+	return Z3_mk_sub(ctx, 2, toMinus);
+}
+
 void array_model(Z3_context ctx){
 
 			LOG_MSG("testing ARRAY model ......");
@@ -719,9 +724,13 @@ void array_model(Z3_context ctx){
 			 */
 			unsigned p1_count = 0;
 			unsigned p2_count = 0;
+
+			Z3_ast default_val = Z3_mk_int(ctx, -1, int_sort);
+			Z3_ast zero = Z3_mk_int(ctx, 0, int_sort);
 			Z3_ast one = Z3_mk_int(ctx, 1, int_sort);
 			Z3_ast two = Z3_mk_int(ctx, 2, int_sort);
 			Z3_ast three = Z3_mk_int(ctx, 3, int_sort);
+			Z3_ast four = Z3_mk_int(ctx, 4, int_sort);
 
 			/**
 			 * make a tuple sort
@@ -733,6 +742,7 @@ void array_model(Z3_context ctx){
 		    Z3_func_decl  mk_p1_decl;
 		    Z3_func_decl  p1_proj_decls[2];
 		    Z3_func_decl p1_field0_decl, p1_field1_decl;
+		    Z3_func_decl p2_field0_decl, p2_field1_decl;
 
 		    mk_tuple_p1 = Z3_mk_string_symbol(ctx, "mk_p1");
 		    p1_names[0] = Z3_mk_string_symbol(ctx, "p1_field1");
@@ -746,6 +756,7 @@ void array_model(Z3_context ctx){
 		    p1_field0_decl = p1_proj_decls[0];
 		    p1_field1_decl = p1_proj_decls[1];
 
+
 		    /**
 		     * declare places array sort
 		     * initial places arrays and their indices
@@ -754,9 +765,11 @@ void array_model(Z3_context ctx){
 		    Z3_sort p2_array_sort = Z3_mk_array_sort(ctx, int_sort, p1_placetype_sort);
 
 		    Z3_ast p1 = mk_var(ctx, "p1", p1_array_sort);
-		    Z3_ast p1_i0 = mk_int(ctx, 0);
+		    Z3_ast p1_i0 = mk_var(ctx, "p1_counter", int_sort);
+//		    Z3_ast p1_i0 = mk_int(ctx, 0);
 			Z3_ast p2 = mk_var(ctx, "p2", p2_array_sort);
-		    Z3_ast p2_i0 = mk_int(ctx, 0);
+			Z3_ast p2_i0 = mk_var(ctx, "p2_counter", int_sort);
+//		    Z3_ast p2_i0 = mk_int(ctx, 0);
 
 		    /**
 		     * initial condition for the model
@@ -779,11 +792,16 @@ void array_model(Z3_context ctx){
 
    		    //store tok2 [3,3]
    		    Z3_ast tok3 = mk_var(ctx, "tok3", p1_placetype_sort);
-   		    Z3_ast tok3_1 = mk_tuple_update(ctx, tok3_1, 0, three);
-   		    Z3_ast tok3_2 = mk_tuple_update(ctx, tok3, 1, three);//update tok3 to [3,3]
+   		    Z3_ast tok3_1 = mk_tuple_update(ctx, tok3, 0, three);
+   		    Z3_ast tok3_2 = mk_tuple_update(ctx, tok3_1, 1, three);//update tok3 to [3,3]
    		    Z3_ast p1_3 = Z3_mk_store(ctx, p1_2, p1_i2, tok3_2);//store tok1 to p1
    		    Z3_ast p1_i3 = mk_add(ctx, p1_i2, one);
 
+   		    //initial condition
+   		    Z3_ast p1_0 = mk_var(ctx, "p1", p1_array_sort);
+   		    Z3_ast ini_eq = Z3_mk_eq(ctx, p1_0, p1_3);
+
+   		    Z3_assert_cnstr(ctx, ini_eq);
    		    /**
    		     * transition with quantifier
    		     */
@@ -794,9 +812,33 @@ void array_model(Z3_context ctx){
    		    Z3_ast select_eq = Z3_mk_eq(ctx, tok_x, Z3_mk_select(ctx, p1_3, i));
    		    //transition pre-condition "x.field1
    		    Z3_ast geq_three = Z3_mk_ge(ctx, mk_unary_app(ctx, p1_field0_decl, tok_x), three);
+   		    //p2's counter +1
+   		    Z3_ast p2_i1 = mk_var(ctx, "p2_counter", int_sort);
+   		    Z3_ast p2_counter = Z3_mk_eq(ctx, p2_i1, mk_add(ctx, p2_i0, one));
+   		    //update place 2 by add new token
+   		    Z3_ast update_val = mk_add(ctx, mk_unary_app(ctx, p1_field0_decl, tok_x), one);
+   		    Z3_ast tok_x1 = mk_tuple_update(ctx, tok_x, 0, update_val);
+   		    Z3_ast p2_4 = mk_var(ctx, "p2", p2_array_sort);
+   		    Z3_ast p2_store = Z3_mk_store(ctx, p2, p2_i0, tok_x1);//store
+   		    Z3_ast p2_store_eq = Z3_mk_eq(ctx, p2_4, p2_store);
+   		    //update place 1 by remove the fired token
+   		    Z3_ast p1_4 = mk_var(ctx, "p1", p1_array_sort);
+   		    Z3_ast p1_store = Z3_mk_store(ctx, p1_3, i, default_val);
+   		    Z3_ast p1_store_eq = Z3_mk_eq(ctx, p1_4, p1_store);
+   		    //p1 counter minus 1
+   		    Z3_ast p1_i4 = mk_var(ctx, "p1_counter", int_sort);
+   		    Z3_ast p1_counter = Z3_mk_eq(ctx, p1_i4, mk_sub(ctx, p1_i3, one));
 
-   		    Z3_ast axiomTree[2] = {select_eq, geq_three};
+
+   		    Z3_ast axiomTree[6] = {select_eq, geq_three, p1_store_eq, p2_store_eq, p2_counter, p1_counter};
+
    		    Z3_ast transition1 = Z3_mk_exists(ctx, 0, 0, 0, 1, &int_sort, &i, axiomTree);
+   		    Z3_assert_cnstr(ctx, transition1);
+   		    //error condition "p2 = 4"
+   		    //p2.field0
+   		    Z3_ast p2_f0 = mk_unary_app(ctx, p1_field0_decl, Z3_mk_select(ctx, p2_4, p2_i1));
+   		    Z3_ast error = Z3_mk_eq(ctx, p2_f0, four);
+   		    Z3_assert_cnstr(ctx, error);
 
 		    //finish
 		    printf("\nFINISH testing ARRAY model...\n");
