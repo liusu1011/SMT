@@ -1,404 +1,808 @@
 R
 C 0
-= 0x7fce80c04568
+= 0x7fbbf2c04568
 R
-P 0x7fce80c04568
+P 0x7fbbf2c04568
 S "MODEL"
 S "true"
 C 2
 R
-P 0x7fce80c04568
+P 0x7fbbf2c04568
 S "MODEL"
 S "true"
 C 2
 R
-P 0x7fce80c04568
+P 0x7fbbf2c04568
 C 3
-= 0x7fce8100f008
+= 0x7fbbf300f008
+M "build a Feb12th_NewFramework"
 R
-P 0x7fce8100f008
+P 0x7fbbf300f008
 C 30
-= 0x7fce81021cd8
+= 0x7fbbf3021cd8
 R
-P 0x7fce8100f008
+P 0x7fbbf300f008
 I 0
-P 0x7fce81021cd8
+P 0x7fbbf3021cd8
 C 142
-= 0x7fce81022538
+= 0x7fbbf3022538
 R
-P 0x7fce8100f008
-C 30
-= 0x7fce81021cd8
-R
-P 0x7fce8100f008
+P 0x7fbbf300f008
 I 1
-P 0x7fce81021cd8
+P 0x7fbbf3021cd8
 C 142
-= 0x7fce81022558
+= 0x7fbbf3022558
 R
-P 0x7fce8100f008
-C 30
-= 0x7fce81021cd8
-R
-P 0x7fce8100f008
+P 0x7fbbf300f008
 I 2
-P 0x7fce81021cd8
+P 0x7fbbf3021cd8
 C 142
-= 0x7fce81022578
+= 0x7fbbf3022578
 R
-P 0x7fce8100f008
-C 30
-= 0x7fce81021cd8
+P 0x7fbbf300f008
+I 3
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf3022598
 R
-P 0x7fce8100f008
+P 0x7fbbf300f008
+I 4
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf30225b8
+R
+P 0x7fbbf300f008
 I 5
-P 0x7fce81021cd8
+P 0x7fbbf3021cd8
 C 142
-= 0x7fce81022598
+= 0x7fbbf30225d8
 R
-P 0x7fce8100f008
-C 30
-= 0x7fce81021cd8
+P 0x7fbbf300f008
+I 6
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf30225f8
 R
-P 0x7fce8100f008
+P 0x7fbbf300f008
+I 6
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf30225f8
+R
+P 0x7fbbf300f008
 I 10
-P 0x7fce81021cd8
+P 0x7fbbf3021cd8
 C 142
-= 0x7fce810225b8
+= 0x7fbbf3022618
 R
-P 0x7fce8100f008
-C 30
-= 0x7fce81021cd8
-R
-P 0x7fce8100f008
-I 12
-P 0x7fce81021cd8
-C 142
-= 0x7fce810225d8
-R
-P 0x7fce8100f008
-C 30
-= 0x7fce81021cd8
-R
-P 0x7fce8100f008
+P 0x7fbbf300f008
 I 11
-P 0x7fce81021cd8
+P 0x7fbbf3021cd8
 C 142
-= 0x7fce810225f8
+= 0x7fbbf3022638
 R
-P 0x7fce8100f008
-C 30
-= 0x7fce81021cd8
-R
-P 0x7fce8100f008
-I 9
-P 0x7fce81021cd8
+P 0x7fbbf300f008
+I 15
+P 0x7fbbf3021cd8
 C 142
-= 0x7fce81022618
+= 0x7fbbf3022658
 R
-P 0x7fce8100f008
-C 30
-= 0x7fce81021cd8
-R
-P 0x7fce8100f008
-I 8
-P 0x7fce81021cd8
+P 0x7fbbf300f008
+I 20
+P 0x7fbbf3021cd8
 C 142
-= 0x7fce81022638
+= 0x7fbbf3022678
 R
-P 0x7fce8100f008
-C 30
-= 0x7fce81021cd8
-M "build a list_framework"
+P 0x7fbbf300f008
+I 99
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf3022698
 R
-P 0x7fce8100f008
-S "flag"
-C 27
+P 0x7fbbf300f008
+I 100
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf30226b8
 R
-P 0x7fce8100f008
-$ |flag|
-P 0x7fce81021cd8
-C 47
-= 0x7fce81022658
-R
-P 0x7fce8100f008
-S "StateList"
-C 27
-R
-P 0x7fce8100f008
-$ |StateList|
-P 0x7fce81021cd8
-P 0
-P 0
-P 0
-P 0
-P 0
-P 0
-C 37
-= 0x7fce81022678
-* 0x7fce81024148 3
-* 0x7fce81028608 4
-* 0x7fce81026658 5
-* 0x7fce81028640 6
-* 0x7fce81028678 7
-* 0x7fce810286b0 8
-R
-P 0x7fce8100f008
-S "states"
-C 27
-R
-P 0x7fce8100f008
-$ |states|
-P 0x7fce81022678
-C 47
-= 0x7fce81022698
-R
-P 0x7fce8100f008
-S "check_tr"
-C 27
-R
-P 0x7fce8100f008
+P 0x7fbbf300f008
 C 29
-= 0x7fce81021c18
+= 0x7fbbf3021c18
 R
-P 0x7fce8100f008
-$ |check_tr|
-U 1
-P 0x7fce81022678
-p 1
-P 0x7fce81021c18
-C 45
-= 0x7fce810286e8
+P 0x7fbbf300f008
+P 0x7fbbf3021cd8
+P 0x7fbbf3021c18
+C 34
+= 0x7fbbf30226d8
 R
-P 0x7fce8100f008
-U 0
-P 0x7fce81022678
-C 147
-= 0x7fce810226b8
-R
-P 0x7fce8100f008
-P 0x7fce810286e8
-U 1
-P 0x7fce810226b8
-p 1
-C 46
-= 0x7fce810241a8
-R
-P 0x7fce8100f008
-U 1
-P 0x7fce810241a8
-p 1
-C 146
-= 0x7fce810241d8
-R
-P 0x7fce8100f008
-S "lst"
+P 0x7fbbf300f008
+S "mk_nets_state"
 C 27
 R
-P 0x7fce8100f008
-P 0x7fce81028678
+P 0x7fbbf300f008
+S "Phil"
+C 27
+R
+P 0x7fbbf300f008
+S "Chop"
+C 27
+R
+P 0x7fbbf300f008
+S "Eat"
+C 27
+R
+P 0x7fbbf300f008
+$ |mk_nets_state|
+U 3
+$ |Phil|
+$ |Chop|
+$ |Eat|
+s 3
+P 0x7fbbf30226d8
+P 0x7fbbf30226d8
+P 0x7fbbf30226d8
+p 3
+P 0
+P 0
+P 0
+P 0
+p 3
+C 35
+= 0x7fbbf30226f8
+* 0x7fbbf302a4a8 5
+@ 0x7fbbf3028608 6 0
+@ 0x7fbbf3028640 6 1
+@ 0x7fbbf3028678 6 2
+R
+P 0x7fbbf300f008
+P 0x7fbbf3021cd8
+P 0x7fbbf30226f8
+C 34
+= 0x7fbbf3022718
+R
+P 0x7fbbf300f008
+S "StatesSeq"
+C 27
+R
+P 0x7fbbf300f008
+$ |StatesSeq|
+P 0x7fbbf3022718
+C 47
+= 0x7fbbf3022738
+R
+P 0x7fbbf300f008
+P 0x7fbbf3022738
+P 0x7fbbf3022538
+C 124
+= 0x7fbbf30286b0
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028608
 U 1
-P 0x7fce810226b8
+P 0x7fbbf30286b0
 p 1
 C 46
-= 0x7fce81024208
+= 0x7fbbf3024208
 R
-P 0x7fce8100f008
-P 0x7fce81024208
-P 0x7fce81022538
-C 71
-= 0x7fce81028758
-R
-P 0x7fce8100f008
-P 0x7fce810286b0
+P 0x7fbbf300f008
+P 0x7fbbf3028640
 U 1
-P 0x7fce810226b8
+P 0x7fbbf30286b0
 p 1
 C 46
-= 0x7fce81024238
+= 0x7fbbf3024238
 R
-P 0x7fce8100f008
-P 0x7fce81028678
+P 0x7fbbf300f008
+P 0x7fbbf3028678
 U 1
-P 0x7fce81024238
+P 0x7fbbf30286b0
 p 1
 C 46
-= 0x7fce81024268
+= 0x7fbbf3024268
 R
-P 0x7fce8100f008
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024208
+P 0x7fbbf3022558
+C 124
+= 0x7fbbf30286e8
+R
+P 0x7fbbf300f008
+P 0x7fbbf30286e8
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf3028720
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024208
+P 0x7fbbf3022578
+C 124
+= 0x7fbbf3028758
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028758
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf3028790
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024208
+P 0x7fbbf3022598
+C 124
+= 0x7fbbf30287c8
+R
+P 0x7fbbf300f008
+P 0x7fbbf30287c8
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf3028800
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024208
+P 0x7fbbf30225b8
+C 124
+= 0x7fbbf3028838
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028838
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf3028870
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024208
+P 0x7fbbf30225d8
+C 124
+= 0x7fbbf30288a8
+R
+P 0x7fbbf300f008
+P 0x7fbbf30288a8
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf30288e0
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024238
+P 0x7fbbf3022558
+C 124
+= 0x7fbbf3028918
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028918
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf3028950
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024238
+P 0x7fbbf3022578
+C 124
+= 0x7fbbf3028988
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028988
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf30289c0
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024238
+P 0x7fbbf3022598
+C 124
+= 0x7fbbf30289f8
+R
+P 0x7fbbf300f008
+P 0x7fbbf30289f8
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf3028a30
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024238
+P 0x7fbbf30225b8
+C 124
+= 0x7fbbf3028a68
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028a68
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf3028aa0
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024238
+P 0x7fbbf30225d8
+C 124
+= 0x7fbbf3028ad8
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028ad8
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf3028b10
+R
+P 0x7fbbf300f008
+C 51
+= 0x7fbbf3021c98
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024268
+P 0x7fbbf3022558
+C 124
+= 0x7fbbf3028b48
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028b48
+P 0x7fbbf3021c98
+C 52
+= 0x7fbbf3028b80
+R
+P 0x7fbbf300f008
+C 51
+= 0x7fbbf3021c98
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024268
+P 0x7fbbf3022578
+C 124
+= 0x7fbbf3028bb8
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028bb8
+P 0x7fbbf3021c98
+C 52
+= 0x7fbbf3028bf0
+R
+P 0x7fbbf300f008
+C 51
+= 0x7fbbf3021c98
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024268
+P 0x7fbbf3022598
+C 124
+= 0x7fbbf3028c28
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028c28
+P 0x7fbbf3021c98
+C 52
+= 0x7fbbf3028c60
+R
+P 0x7fbbf300f008
+C 51
+= 0x7fbbf3021c98
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024268
+P 0x7fbbf30225b8
+C 124
+= 0x7fbbf3028c98
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028c98
+P 0x7fbbf3021c98
+C 52
+= 0x7fbbf3028cd0
+R
+P 0x7fbbf300f008
+C 51
+= 0x7fbbf3021c98
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024268
+P 0x7fbbf30225d8
+C 124
+= 0x7fbbf3028d08
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028d08
+P 0x7fbbf3021c98
+C 52
+= 0x7fbbf3028d40
+R
+P 0x7fbbf300f008
+U 15
+P 0x7fbbf3028720
+P 0x7fbbf3028790
+P 0x7fbbf3028800
+P 0x7fbbf3028870
+P 0x7fbbf30288e0
+P 0x7fbbf3028950
+P 0x7fbbf30289c0
+P 0x7fbbf3028a30
+P 0x7fbbf3028aa0
+P 0x7fbbf3028b10
+P 0x7fbbf3028b80
+P 0x7fbbf3028bf0
+P 0x7fbbf3028c60
+P 0x7fbbf3028cd0
+P 0x7fbbf3028d40
+p 15
+C 59
+= 0x7fbbf3034c18
+R
+P 0x7fbbf300f008
+P 0x7fbbf3034c18
+C 443
+R
+P 0x7fbbf300f008
+U 0
+P 0x7fbbf3021cd8
+C 147
+= 0x7fbbf3022978
+R
+P 0x7fbbf300f008
+S "i"
+C 27
+R
+P 0x7fbbf300f008
+P 0x7fbbf3022978
+P 0x7fbbf3022538
+C 72
+= 0x7fbbf3028db0
+R
+P 0x7fbbf300f008
+P 0x7fbbf3022978
+P 0x7fbbf3022618
+C 70
+= 0x7fbbf3028de8
+R
+P 0x7fbbf300f008
 U 2
-P 0x7fce81024208
-P 0x7fce81022558
+P 0x7fbbf3028db0
+P 0x7fbbf3028de8
+p 2
+C 59
+= 0x7fbbf3028e20
+R
+P 0x7fbbf300f008
+C 30
+= 0x7fbbf3021cd8
+R
+P 0x7fbbf300f008
+I 0
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf3022538
+R
+P 0x7fbbf300f008
+I 1
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf3022558
+R
+P 0x7fbbf300f008
+I 2
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf3022578
+R
+P 0x7fbbf300f008
+I 5
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf30225d8
+R
+P 0x7fbbf300f008
+P 0x7fbbf3022738
+P 0x7fbbf3022978
+C 124
+= 0x7fbbf3028e58
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028608
+U 1
+P 0x7fbbf3028e58
+p 1
+C 46
+= 0x7fbbf30243e8
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028640
+U 1
+P 0x7fbbf3028e58
+p 1
+C 46
+= 0x7fbbf3024418
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028678
+U 1
+P 0x7fbbf3028e58
+p 1
+C 46
+= 0x7fbbf3024448
+R
+P 0x7fbbf300f008
+U 2
+P 0x7fbbf3022978
+P 0x7fbbf3022558
 p 2
 C 61
-= 0x7fce81028790
+= 0x7fbbf3028e90
 R
-P 0x7fce8100f008
-P 0x7fce81024268
-P 0x7fce81024208
+P 0x7fbbf300f008
+P 0x7fbbf3022738
+P 0x7fbbf3028e90
+C 124
+= 0x7fbbf3028ec8
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028608
+U 1
+P 0x7fbbf3028ec8
+p 1
+C 46
+= 0x7fbbf3024478
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028640
+U 1
+P 0x7fbbf3028ec8
+p 1
+C 46
+= 0x7fbbf30244a8
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028678
+U 1
+P 0x7fbbf3028ec8
+p 1
+C 46
+= 0x7fbbf30244d8
+R
+P 0x7fbbf300f008
+S "x"
+C 27
+R
+P 0x7fbbf300f008
+$ |x|
+P 0x7fbbf3021cd8
+C 47
+= 0x7fbbf3022998
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf30243e8
+P 0x7fbbf3022558
+C 124
+= 0x7fbbf3028f00
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028f00
+P 0x7fbbf3021c78
 C 52
-= 0x7fce810287c8
+= 0x7fbbf3028f38
 R
-P 0x7fce8100f008
-P 0x7fce810286e8
-U 1
-P 0x7fce81024238
-p 1
-C 46
-= 0x7fce81024298
+P 0x7fbbf300f008
+C 51
+= 0x7fbbf3021c98
 R
-P 0x7fce8100f008
-P 0x7fce81024268
-P 0x7fce81022638
+P 0x7fbbf300f008
+P 0x7fbbf30243e8
+P 0x7fbbf3022998
+P 0x7fbbf3021c98
+C 125
+= 0x7fbbf3026718
+R
+P 0x7fbbf300f008
+P 0x7fbbf3026718
+P 0x7fbbf3024478
 C 52
-= 0x7fce81028800
+= 0x7fbbf3028f70
 R
-P 0x7fce8100f008
-P 0x7fce810286b0
-U 1
-P 0x7fce81024238
-p 1
-C 46
-= 0x7fce810242c8
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
 R
-P 0x7fce8100f008
-P 0x7fce81028608
-U 1
-P 0x7fce810242c8
-p 1
-C 46
-= 0x7fce810242f8
+P 0x7fbbf300f008
+P 0x7fbbf3024448
+P 0x7fbbf3022998
+P 0x7fbbf3021c78
+C 125
+= 0x7fbbf3026798
 R
-P 0x7fce8100f008
-P 0x7fce81028640
-U 1
-P 0x7fce810242c8
-p 1
-C 46
-= 0x7fce81024328
+P 0x7fbbf300f008
+P 0x7fbbf3026798
+P 0x7fbbf30244d8
+C 52
+= 0x7fbbf3028fa8
 R
-P 0x7fce8100f008
-P 0x7fce81028640
-U 1
-P 0x7fce810226b8
-p 1
-C 46
-= 0x7fce81024358
-R
-P 0x7fce8100f008
-P 0x7fce81028640
-U 1
-P 0x7fce81024238
-p 1
-C 46
-= 0x7fce81024388
-R
-P 0x7fce8100f008
+P 0x7fbbf300f008
 U 2
-P 0x7fce81024358
-P 0x7fce81024388
+P 0x7fbbf3028f70
+P 0x7fbbf3028fa8
 p 2
 C 59
-= 0x7fce81028838
+= 0x7fbbf3028fe0
 R
-P 0x7fce8100f008
-U 3
-P 0x7fce810287c8
-P 0x7fce81024298
-P 0x7fce81028800
-p 3
-C 59
-= 0x7fce810266d8
-R
-P 0x7fce8100f008
-P 0x7fce81022658
-P 0x7fce81022558
+P 0x7fbbf300f008
+P 0x7fbbf3028ec8
+P 0x7fbbf3028e58
 C 52
-= 0x7fce81028870
+= 0x7fbbf3029018
 R
-P 0x7fce8100f008
-P 0x7fce81028838
-P 0x7fce810266d8
-P 0x7fce81028870
+P 0x7fbbf300f008
+P 0x7fbbf3028f38
+P 0x7fbbf3028fe0
+P 0x7fbbf3029018
 C 55
-= 0x7fce81026718
+= 0x7fbbf3026818
 R
-P 0x7fce8100f008
+P 0x7fbbf300f008
+C 30
+= 0x7fbbf3021cd8
+R
+P 0x7fbbf300f008
+I 0
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf3022538
+R
+P 0x7fbbf300f008
+I 1
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf3022558
+R
+P 0x7fbbf300f008
+I 2
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf3022578
+R
+P 0x7fbbf300f008
+I 5
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf30225d8
+R
+P 0x7fbbf300f008
+I 5
+P 0x7fbbf3021cd8
+C 142
+= 0x7fbbf30225d8
+R
+P 0x7fbbf300f008
+P 0x7fbbf3022738
+P 0x7fbbf3022978
+C 124
+= 0x7fbbf3028e58
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028608
+U 1
+P 0x7fbbf3028e58
+p 1
+C 46
+= 0x7fbbf30243e8
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028640
+U 1
+P 0x7fbbf3028e58
+p 1
+C 46
+= 0x7fbbf3024418
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028678
+U 1
+P 0x7fbbf3028e58
+p 1
+C 46
+= 0x7fbbf3024448
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+C 51
+= 0x7fbbf3021c98
+R
+P 0x7fbbf300f008
+C 50
+= 0x7fbbf3021c78
+R
+P 0x7fbbf300f008
+P 0x7fbbf3024448
+P 0x7fbbf30225d8
+C 124
+= 0x7fbbf3029050
+R
+P 0x7fbbf300f008
+P 0x7fbbf3029050
+P 0x7fbbf3021c78
+C 52
+= 0x7fbbf3029088
+R
+P 0x7fbbf300f008
+P 0x7fbbf3029088
+P 0x7fbbf3021c98
+P 0x7fbbf3021c78
+C 55
+= 0x7fbbf3026858
+R
+P 0x7fbbf300f008
+U 2
+P 0x7fbbf3026818
+P 0x7fbbf3026858
+p 2
+C 59
+= 0x7fbbf30290c0
+R
+P 0x7fbbf300f008
+P 0x7fbbf3028e20
+P 0x7fbbf30290c0
+C 57
+= 0x7fbbf30290f8
+R
+P 0x7fbbf300f008
 I 1
 U 0
 N
 N
-U 1
-P 0x7fce810241d8
-p 1
+U 0
+p 0
 U 0
 p 0
 U 1
-P 0x7fce81022678
+P 0x7fbbf3021cd8
 p 1
-$ |lst|
+$ |i|
 s 1
-P 0x7fce81026718
+P 0x7fbbf30290f8
 C 151
-= 0x7fce81034c18
+= 0x7fbbf307e018
 R
-P 0x7fce8100f008
-P 0x7fce81034c18
+P 0x7fbbf300f008
+P 0x7fbbf307e018
 C 443
 R
-P 0x7fce8100f008
-P 0x7fce81028640
-U 1
-P 0x7fce81022698
-p 1
-C 46
-= 0x7fce81024418
-R
-P 0x7fce8100f008
-P 0x7fce81028678
-U 1
-P 0x7fce81022698
-p 1
-C 46
-= 0x7fce81024448
-R
-P 0x7fce8100f008
-P 0x7fce81024448
-P 0x7fce81022558
-C 52
-= 0x7fce810288e0
-R
-P 0x7fce8100f008
-P 0x7fce810286e8
-U 1
-P 0x7fce81022698
-p 1
-C 46
-= 0x7fce81024478
-R
-P 0x7fce8100f008
-U 3
-P 0x7fce81024418
-P 0x7fce810288e0
-P 0x7fce81024478
-p 3
-C 59
-= 0x7fce81026758
-R
-P 0x7fce8100f008
-P 0x7fce81026758
-C 443
-R
-P 0x7fce8100f008
+P 0x7fbbf300f008
 P 0
 C 444
-* 0 1
-R
-P 0x7fce8100f008
-C 475
-R
-P 0x7fce8100f008
-C 5
-R
-P 0x7fce80c04568
-C 1

@@ -510,19 +510,6 @@ int *decode(int d){
 	return 0;
 }
 
-void simple_example()
-{
-    Z3_context ctx;
-    LOG_MSG("simple_example");
-    printf("\nsimple_example\n");
-
-    ctx = mk_context();
-
-    /* do something with the context */
-    printf("CONTEXT:\n%sEND OF CONTEXT\n", Z3_context_to_string(ctx));
-    /* delete logical context */
-    Z3_del_context(ctx);
-}
 
 void array_example3()
 {
@@ -1078,8 +1065,9 @@ void list_framework_Feb1st(Z3_context ctx)
 
 /**
  * Simple version of list_framework_Feb2nd()
+ *
  */
-void list_framework_Feb5th(Z3_context ctx){
+void list_framework_Feb10th(Z3_context ctx){
 		Z3_ast zero  = mk_int(ctx, 0);
 		Z3_ast one = mk_int(ctx, 1);
 		Z3_ast two = mk_int(ctx, 2);
@@ -1225,13 +1213,15 @@ void fib(Z3_context ctx){
 /**
  * idea using quantified array
  */
-void Feb6th_ArrayFramework(Z3_context ctx){
-	LOG_MSG("build a Feb6th_ArrayFramework");
-				printf("\nFeb6th_ArrayFramework\n");
+void Feb10th_ArrayFramework(Z3_context ctx){
+	LOG_MSG("build a Feb10th_ArrayFramework");
+				printf("\nFeb10th_ArrayFramework\n");
 		Z3_sort int_sort = Z3_mk_int_sort(ctx);
 		/* Some constant integers */
 			Z3_ast zero  = Z3_mk_int(ctx, 0, int_sort);
 			Z3_ast one   = Z3_mk_int(ctx, 1, int_sort);
+			Z3_ast minusone   = Z3_mk_int(ctx, -1, int_sort);
+
 			Z3_ast two   = Z3_mk_int(ctx, 2, int_sort);
 			Z3_ast three = Z3_mk_int(ctx, 3, int_sort);
 			Z3_ast four  = Z3_mk_int(ctx, 4, int_sort);
@@ -1250,7 +1240,7 @@ void Feb6th_ArrayFramework(Z3_context ctx){
 
 			//declare an array to store state paths
 			Z3_ast StatesSeq = mk_var(ctx, "StatesSeq", states_array_sort);
-			//initial condition A[0] = 2
+			//initial condition A[0] = 1
 			Z3_assert_cnstr(ctx, Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, zero), one));
 			//define axiom for the transition system
 			Z3_ast i = Z3_mk_bound(ctx, 0, int_sort);
@@ -1270,34 +1260,35 @@ void Feb6th_ArrayFramework(Z3_context ctx){
 			Z3_ast outer_cond = Z3_mk_eq(ctx, cur_st, zero);
 
 			//transition pre-condition: cur_st > 0
-			Z3_ast pre_cond = Z3_mk_lt(ctx, cur_st, ten);
+			Z3_ast pre_cond = Z3_mk_gt(ctx, cur_st, zero);
 			//transition post-condition: next_st = cur_st +1
 			Z3_ast post_cond = Z3_mk_eq(ctx, next_st, mk_add(ctx, cur_st, one)); //TODO: cur_st may not match the sort of one
 			//Transition Condition
 			Z3_ast Trans_cond = Z3_mk_ite(ctx, pre_cond,
 												post_cond,
 												Z3_mk_eq(ctx, next_st, cur_st));
-
+			Z3_ast store_next_st= Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)), next_st);
 			//error condition: next_st = 5
-			Z3_ast if_error_cond = Z3_mk_eq(ctx, next_st, four);
+//			Z3_ast if_error_cond = Z3_mk_eq(ctx, next_st, four);
+			Z3_ast error_cond = Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)), five);
 			//the if in error condition, decide which value stored in next state in State array,
 			//if error meet, store 0, if not store next state
-			Z3_ast Error_cond = Z3_mk_ite(ctx, if_error_cond,
-												Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)), zero),
-												Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)), next_st));
+//			Z3_ast Error_cond = Z3_mk_ite(ctx, if_error_cond,
+//												Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)), zero),
+//												Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)), next_st));
 			//big if model body
-			Z3_ast bigif = Z3_mk_ite(ctx, outer_cond,
-										Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)), zero),
-										mk_and(ctx, Trans_cond, Error_cond)
-										);
-			Z3_ast body_and[2] = {get_cur_st, bigif};
-			Z3_ast model_body = Z3_mk_and(ctx, 2, body_and);
+//			Z3_ast bigif = Z3_mk_ite(ctx, outer_cond,
+//										Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)), zero),
+//										mk_and(ctx, Trans_cond, Error_cond)
+//										);
+			Z3_ast body_and[3] = {get_cur_st, Trans_cond, store_next_st};
+			Z3_ast model_body = Z3_mk_and(ctx, 3, body_and);
 
 			//big imply from bound i
-			Z3_ast bigImply = Z3_mk_implies(ctx, bound_i, model_body);
+//			Z3_ast bigImply = Z3_mk_implies(ctx, bound_i, model_body);
 
 			//for all axiom
-			Z3_ast model_axiom = Z3_mk_forall(ctx, 0, 0, 0, 1, &int_sort, &index_i_name, bigImply);
+			Z3_ast model_axiom = Z3_mk_forall(ctx, 0, 0, 0, 1, &int_sort, &index_i_name, model_body);
 			Z3_assert_cnstr(ctx, model_axiom);
 
 }
@@ -1339,7 +1330,7 @@ void Second_Feb6th_ArrayFramework(Z3_context ctx){
 			//declare an array to store state paths
 			Z3_ast StatesSeq = mk_var(ctx, "StatesSeq", states_array_sort);
 			//initial condition
-			Z3_assert_cnstr(ctx, Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, zero), one));
+			Z3_assert_cnstr(ctx, Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, zero), minusone));
 
 
 			//define axiom for the transition system
@@ -1367,11 +1358,13 @@ void Second_Feb6th_ArrayFramework(Z3_context ctx){
 					mk_add(ctx, Z3_mk_select(ctx, StatesSeq, i), one));
 			Z3_ast transition_decre_one = Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)),
 								mk_sub(ctx, Z3_mk_select(ctx, StatesSeq, i), one));
-			Z3_ast transition_relation = mk_or(ctx, transition_incre_one, transition_decre_one);
+//			Z3_ast transition_relation = mk_or(ctx, transition_incre_one, transition_decre_one);
+			Z3_ast transition_relation = Z3_mk_ite(ctx, Z3_mk_gt(ctx, Z3_mk_select(ctx, StatesSeq, i), zero),
+					transition_incre_one, transition_decre_one);
 			Z3_ast bigif = Z3_mk_ite(ctx, Z3_mk_gt(ctx, Z3_mk_select(ctx, StatesSeq, i), minus20),
 													transition_relation,
 													Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)),
-															Z3_mk_select(ctx, StatesSeq, i))
+															Z3_mk_select(ctx, StatesSeq, i)) //SS[i+1] = S[i]
 													);
 
 //			Z3_ast if_error = Z3_mk_ite(ctx, Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)), minusone),
@@ -1391,7 +1384,7 @@ void Second_Feb6th_ArrayFramework(Z3_context ctx){
 			Z3_ast ei = Z3_mk_bound(ctx, 0, int_sort);
 			Z3_symbol exist_index_i_name = Z3_mk_string_symbol(ctx, "ei");
 
-			Z3_ast Error_cond = Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, ei), minus5);
+			Z3_ast Error_cond = Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, ei), minus10);
 			Z3_ast ei_left = Z3_mk_ge(ctx, ei, zero);
 			Z3_ast ei_right = Z3_mk_le(ctx, ei, ten);
 			Z3_ast ei_bound = mk_and(ctx, ei_left, ei_right);
@@ -1400,13 +1393,353 @@ void Second_Feb6th_ArrayFramework(Z3_context ctx){
 			Z3_ast property_axiom = Z3_mk_exists(ctx, 0, 0, 0, 1, &int_sort, &exist_index_i_name, ei_and);
 			Z3_assert_cnstr(ctx, property_axiom);
 
+}
 
+/**
+ * works:
+ * 1. if bound, false->reach error; true->error unreachable
+ * 2. if not bound, unsat->reach error; unknown search -> error unreachable
+ */
+void Feb11th_ArrayFramework(Z3_context ctx){
+	LOG_MSG("build a Feb11th_ArrayFramework");
+				printf("\nSecond Feb11th_ArrayFramework\n");
+		Z3_sort int_sort = Z3_mk_int_sort(ctx);
+		Z3_sort bool_sort = Z3_mk_bool_sort(ctx);
+		/* Some constant integers */
+			Z3_ast zero  = Z3_mk_int(ctx, 0, int_sort);
+			Z3_ast one   = Z3_mk_int(ctx, 1, int_sort);
+			Z3_ast two   = Z3_mk_int(ctx, 2, int_sort);
+			Z3_ast three = Z3_mk_int(ctx, 3, int_sort);
+			Z3_ast four  = Z3_mk_int(ctx, 4, int_sort);
+			Z3_ast five  = Z3_mk_int(ctx, 5, int_sort);
+			Z3_ast six  = Z3_mk_int(ctx, 6, int_sort);
+			Z3_ast eight  = Z3_mk_int(ctx, 6, int_sort);
+			Z3_ast ten  = Z3_mk_int(ctx, 10, int_sort);
+			Z3_ast eleven  = Z3_mk_int(ctx, 11, int_sort);
+			Z3_ast fifteen  = Z3_mk_int(ctx, 15, int_sort);
+			Z3_ast twenty  = Z3_mk_int(ctx, 20, int_sort);
+			Z3_ast ninetynine  = Z3_mk_int(ctx, 99, int_sort);
+			Z3_ast onehundred  = Z3_mk_int(ctx, 100, int_sort);
+
+			Z3_ast minusone  = Z3_mk_int(ctx, -1, int_sort);
+			Z3_ast minus10  = Z3_mk_int(ctx, -10, int_sort);
+			Z3_ast minus5  = Z3_mk_int(ctx, -5, int_sort);
+			Z3_ast minus15  = Z3_mk_int(ctx, -15, int_sort);
+			Z3_ast minus20  = Z3_mk_int(ctx, -20, int_sort);
+			Z3_ast minus100 = Z3_mk_int(ctx, -100, int_sort);
+
+			Z3_ast flag = mk_var(ctx, "flag", bool_sort);
+			//declare a state sort
+			Z3_sort state_sort = Z3_mk_int_sort(ctx);
+			//declare an array sort
+			Z3_sort states_array_sort = Z3_mk_array_sort(ctx, int_sort, int_sort);
+
+			//declare an array to store state paths
+			Z3_ast StatesSeq = mk_var(ctx, "StatesSeq", states_array_sort);
+			//initial condition
+			//SS[0] = 2
+			Z3_assert_cnstr(ctx, Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, zero), two));
+
+
+//			define axiom for the transition system
+			Z3_ast i = Z3_mk_bound(ctx, 0, int_sort);
+			Z3_symbol forall_index_i_name = Z3_mk_string_symbol(ctx, "i");
+			Z3_ast bound_left = Z3_mk_ge(ctx, i, zero);
+			Z3_ast bound_right = Z3_mk_le(ctx, i, onehundred);
+			Z3_ast bound_i = mk_and(ctx, bound_left, bound_right);
+			/**
+			 * define conditions in forall axiom
+			 */
+			//get current state from states array, select(StatesSeq, i) == current state
+//			Z3_ast get_cur_st = Z3_mk_eq(ctx, cur_st, Z3_mk_select(ctx, StatesSeq, i));
+
+			//transition pre-condition: cur_st > 0
+//			Z3_ast pre_cond = Z3_mk_gt(ctx, cur_st, zero);
+			//transition post-condition: next_st = cur_st +1
+//			Z3_ast post_cond = Z3_mk_eq(ctx, next_st, mk_add(ctx, Z3_mk_select(ctx, StatesSeq, i), one)); //TODO: cur_st may not match the sort of one
+			//Transition Condition
+//			Z3_ast Trans_cond = Z3_mk_ite(ctx, pre_cond,
+//												post_cond,
+//												Z3_mk_eq(ctx, next_st, cur_st));
+			//try plus one or minus one
+			Z3_ast transition_incre_two = Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)),
+					mk_add(ctx, Z3_mk_select(ctx, StatesSeq, i), two));
+			Z3_ast transition_decre_one = Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)),
+								mk_sub(ctx, Z3_mk_select(ctx, StatesSeq, i), two));
+			Z3_ast transition_eq = Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)),
+											Z3_mk_select(ctx, StatesSeq, i));
+//			Z3_ast transition_relation = mk_or(ctx, transition_incre_one, transition_decre_one);
+			//Transition Relation
+			Z3_ast transition_relation = Z3_mk_ite(ctx, Z3_mk_gt(ctx, Z3_mk_select(ctx, StatesSeq, i), zero),
+					transition_incre_two, transition_decre_one);
+			//ERROR condition
+			Z3_ast error_cond = Z3_mk_ite(ctx, Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, i), ninetynine),
+								Z3_mk_false(ctx), Z3_mk_true(ctx));
+			Z3_ast bigif = Z3_mk_ite(ctx, Z3_mk_gt(ctx, Z3_mk_select(ctx, StatesSeq, i), zero),
+													transition_relation,
+													Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one)),
+															Z3_mk_select(ctx, StatesSeq, i)) //SS[i+1] = S[i]
+													);
+			Z3_ast trans_error_and = mk_and(ctx, transition_relation, error_cond);
+
+			Z3_ast imply = Z3_mk_implies(ctx, bound_i, trans_error_and);
+
+			//for all axiom
+			Z3_ast model_axiom = Z3_mk_forall(ctx, 0, 0, 0, 1, &int_sort, &forall_index_i_name, imply);
+			Z3_assert_cnstr(ctx, model_axiom);
+
+			/**
+			 * using exist detect all array to see if it violates property
+			 */
+//			Z3_ast ei = Z3_mk_bound(ctx, 0, int_sort);
+//			Z3_symbol exist_index_i_name = Z3_mk_string_symbol(ctx, "ei");
+//
+//			Z3_ast Error_cond = Z3_mk_eq(ctx, Z3_mk_select(ctx, StatesSeq, ei), minus10);
+//			Z3_ast ei_left = Z3_mk_ge(ctx, ei, zero);
+//			Z3_ast ei_right = Z3_mk_le(ctx, ei, ten);
+//			Z3_ast ei_bound = mk_and(ctx, ei_left, ei_right);
+//
+//			Z3_ast ei_and = mk_and(ctx, ei_bound, Error_cond);
+//			Z3_ast property_axiom = Z3_mk_exists(ctx, 0, 0, 0, 1, &int_sort, &exist_index_i_name, ei_and);
+//			Z3_assert_cnstr(ctx, property_axiom);
+
+}
+
+/*****************************************************************************************/
+/*****************************************************************************************/
+/*****************************************************************************************/
+
+/**
+ * separate transition relation out into function
+ * API transition(Z3_context ctx, Z3_context StatePaths, Z3_ast BoundedVariable_i, places)
+ */
+Z3_ast transition(Z3_context ctx, Z3_ast StatesSeq, Z3_ast i, Z3_ast places[]){
+	Z3_sort int_sort = Z3_mk_int_sort(ctx);
+	Z3_ast zero  = Z3_mk_int(ctx, 0, int_sort);
+	Z3_ast one   = Z3_mk_int(ctx, 1, int_sort);
+	Z3_ast two   = Z3_mk_int(ctx, 2, int_sort);
+	Z3_ast five = Z3_mk_int(ctx, 5, int_sort);
+
+	//transition pick
+	Z3_ast cur_state = Z3_mk_select(ctx, StatesSeq, i);
+	Z3_ast Phil_cur = mk_unary_app(ctx, places[0], cur_state);//proj0(net)
+	Z3_ast Chop_cur = mk_unary_app(ctx, places[1], cur_state);//proj1(net)
+	Z3_ast Eat_cur = mk_unary_app(ctx, places[2], cur_state);//proj1(net)
+
+	Z3_ast next_state = Z3_mk_select(ctx, StatesSeq, mk_add(ctx, i, one));
+		Z3_ast Phil_next = mk_unary_app(ctx, places[0], next_state);//proj0(net)
+		Z3_ast Chop_next = mk_unary_app(ctx, places[1], next_state);//proj1(net)
+		Z3_ast Eat_next = mk_unary_app(ctx, places[2], next_state);//proj1(net)
+
+	Z3_ast x = mk_var(ctx, "x", int_sort);
+		//cond
+	Z3_ast trans_pick_have_phil_cond = Z3_mk_eq(ctx, Z3_mk_set_member(ctx, one, Phil_cur), Z3_mk_true(ctx));
+//	Z3_ast trans_pick_have_chop1_cond = Z3_mk_eq(ctx, Z3_mk_set_member(ctx, x, Chop_cur), Z3_mk_true(ctx));
+//	Z3_ast trans_pick_have_chop2_cond = Z3_mk_eq(ctx,
+//			Z3_mk_set_member(ctx, Z3_mk_mod(ctx, mk_add(ctx, x, one), five), Chop_cur), Z3_mk_true(ctx));
+//	Z3_ast trans_pick_cond_and[3] = {trans_pick_have_phil_cond, trans_pick_have_chop1_cond, trans_pick_have_chop2_cond};
+//	Z3_ast trans_pick_cond = Z3_mk_and(ctx, 3, trans_pick_cond_and);
+
+//	Z3_ast del_tok_and[2] = {Z3_mk_eq(ctx, Z3_mk_set_del(ctx, Phil_cur, x), Phil_next),
+//			Z3_mk_eq(ctx,  Z3_mk_set_del(ctx, Z3_mk_set_del(ctx, Chop_cur, x),
+//					Z3_mk_mod(ctx, mk_add(ctx, x, one), five)), Chop_next),
+//			};
+//	Z3_ast del_tok = Z3_mk_and(ctx, 2, del_tok_and);
+	Z3_ast del_tok = Z3_mk_eq(ctx, Z3_mk_set_del(ctx, Phil_cur, x), Phil_next);
+
+	Z3_ast add_tok = Z3_mk_eq(ctx, Z3_mk_set_add(ctx, Eat_cur, x), Eat_next);
+	Z3_ast trans_pick_fire = mk_and(ctx, del_tok, add_tok);
+
+	Z3_ast trans_pick = Z3_mk_ite(ctx, trans_pick_have_phil_cond, trans_pick_fire, Z3_mk_eq(ctx, next_state, cur_state));
+	//transition drop
+
+	return trans_pick;
+}
+
+/**
+ * separate error condition out into function
+ * API transition(Z3_context ctx, Z3_context StatePaths, Z3_ast BoundedVariable_i
+ */
+Z3_ast errorCond(Z3_context ctx, Z3_ast StatesSeq, Z3_ast i, Z3_ast places[]){
+	Z3_sort int_sort = Z3_mk_int_sort(ctx);
+	Z3_ast zero  = Z3_mk_int(ctx, 0, int_sort);
+	Z3_ast one   = Z3_mk_int(ctx, 1, int_sort);
+	Z3_ast two   = Z3_mk_int(ctx, 2, int_sort);
+	Z3_ast five = Z3_mk_int(ctx, 5, int_sort);
+	Z3_ast six = Z3_mk_int(ctx, 5, int_sort);
+
+
+		Z3_ast next_state = Z3_mk_select(ctx, StatesSeq, i);
+		Z3_ast Phil_next = mk_unary_app(ctx, places[0], next_state);//proj0(net)
+		Z3_ast Chop_next = mk_unary_app(ctx, places[1], next_state);//proj1(net)
+		Z3_ast Eat_next = mk_unary_app(ctx, places[2], next_state);//proj1(net)
+
+		Z3_ast error_cond = Z3_mk_ite(ctx, Z3_mk_eq(ctx, Z3_mk_set_member(ctx, five, Eat_next), Z3_mk_true(ctx)),
+										Z3_mk_false(ctx), Z3_mk_true(ctx));
+	return error_cond;
+}
+
+void Feb12th_NewFramework(Z3_context ctx){
+	LOG_MSG("build a Feb12th_NewFramework");
+
+				printf("\nFeb12th_NewFramework\n");
+		Z3_sort int_sort = Z3_mk_int_sort(ctx);
+		/* Some constant integers */
+			Z3_ast zero  = Z3_mk_int(ctx, 0, int_sort);
+			Z3_ast one   = Z3_mk_int(ctx, 1, int_sort);
+			Z3_ast two   = Z3_mk_int(ctx, 2, int_sort);
+			Z3_ast three = Z3_mk_int(ctx, 3, int_sort);
+			Z3_ast four  = Z3_mk_int(ctx, 4, int_sort);
+			Z3_ast five  = Z3_mk_int(ctx, 5, int_sort);
+			Z3_ast six  = Z3_mk_int(ctx, 6, int_sort);
+			Z3_ast eight  = Z3_mk_int(ctx, 6, int_sort);
+			Z3_ast ten  = Z3_mk_int(ctx, 10, int_sort);
+			Z3_ast eleven  = Z3_mk_int(ctx, 11, int_sort);
+			Z3_ast fifteen  = Z3_mk_int(ctx, 15, int_sort);
+			Z3_ast twenty  = Z3_mk_int(ctx, 20, int_sort);
+			Z3_ast ninetynine  = Z3_mk_int(ctx, 99, int_sort);
+			Z3_ast onehundred  = Z3_mk_int(ctx, 100, int_sort);
+
+			//declare a state sort
+			//mk set sort
+			Z3_sort place_set_sort = Z3_mk_set_sort(ctx, int_sort);
+
+			Z3_ast mk_tuple_name = Z3_mk_string_symbol(ctx, "mk_nets_state");
+							Z3_func_decl proj_names[3];
+							proj_names[0] = Z3_mk_string_symbol(ctx, "Phil");
+							proj_names[1] = Z3_mk_string_symbol(ctx, "Chop");
+							proj_names[2] = Z3_mk_string_symbol(ctx, "Eat");
+							Z3_func_decl proj_sorts[3];
+							proj_sorts[0] = place_set_sort;
+							proj_sorts[1] = place_set_sort;
+							proj_sorts[2] = place_set_sort;
+							Z3_func_decl mk_tuple_decl;
+							Z3_func_decl places[3];
+							Z3_ast	nets_state_sort = Z3_mk_tuple_sort(ctx, mk_tuple_name, 3,
+									proj_names, proj_sorts, &mk_tuple_decl, places);
+
+//							Z3_ast net = mk_var(ctx, "net", nets_state_sort);
+			//declare an array sort
+			Z3_sort states_array_sort = Z3_mk_array_sort(ctx, int_sort, nets_state_sort);
+
+			//declare an array to store state paths
+			Z3_ast StatesSeq = mk_var(ctx, "StatesSeq", states_array_sort);
+			//initial condition
+			Z3_ast initial_state = Z3_mk_select(ctx, StatesSeq, zero);
+			Z3_ast Phil0 = mk_unary_app(ctx, places[0], initial_state);//proj0(net)
+			Z3_ast Chop0 = mk_unary_app(ctx, places[1], initial_state);//proj1(net)
+			Z3_ast Eat0 = mk_unary_app(ctx, places[2], initial_state);//proj1(net)
+
+			Z3_ast ini_and[15] = {
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, one, Phil0), Z3_mk_true(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, two, Phil0), Z3_mk_true(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, three, Phil0), Z3_mk_true(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, four, Phil0), Z3_mk_true(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, five, Phil0), Z3_mk_true(ctx)),
+
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, one, Chop0), Z3_mk_true(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, two, Chop0), Z3_mk_true(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, three, Chop0), Z3_mk_true(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, four, Chop0), Z3_mk_true(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, five, Chop0), Z3_mk_true(ctx)),
+
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, one, Eat0), Z3_mk_false(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, two, Eat0), Z3_mk_false(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, three, Eat0), Z3_mk_false(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, four, Eat0), Z3_mk_false(ctx)),
+									Z3_mk_eq(ctx, Z3_mk_set_member(ctx, five, Eat0), Z3_mk_false(ctx)),
+							};
+			Z3_ast initial_state_cond = Z3_mk_and(ctx, 15, ini_and);
+			Z3_assert_cnstr(ctx, initial_state_cond);
+
+
+////			define axiom for the transition system
+			Z3_ast i = Z3_mk_bound(ctx, 0, int_sort);
+			Z3_symbol forall_index_i_name = Z3_mk_string_symbol(ctx, "i");
+			Z3_ast bound_left = Z3_mk_ge(ctx, i, zero);
+			Z3_ast bound_right = Z3_mk_le(ctx, i, ten);
+			Z3_ast bound_i = mk_and(ctx, bound_left, bound_right);
+
+			//Transition Condition
+			Z3_ast transition_relation = transition(ctx, StatesSeq, i, places);
+
+			//ERROR condition
+			Z3_ast error_cond = errorCond(ctx, StatesSeq, i, places);
+
+			//combines Transition and Error condition
+			Z3_ast trans_error_and = mk_and(ctx, transition_relation, error_cond);
+
+			Z3_ast imply = Z3_mk_implies(ctx, bound_i, trans_error_and);
+
+			//for all axiom
+			Z3_ast model_axiom = Z3_mk_forall(ctx, 0, 0, 0, 1, &int_sort, &forall_index_i_name, imply);
+			Z3_assert_cnstr(ctx, model_axiom);
+
+}
+
+void testSet(Z3_context ctx){
+	LOG_MSG("test Set");
+	printf("\ntest set\n");
+		Z3_ast	int_sort = Z3_mk_int_sort(ctx);
+				Z3_ast one   = Z3_mk_int(ctx, 1, int_sort);
+				Z3_ast two   = Z3_mk_int(ctx, 2, int_sort);
+				Z3_ast three = Z3_mk_int(ctx, 3, int_sort);
+				Z3_ast four  = Z3_mk_int(ctx, 4, int_sort);
+				Z3_ast five  = Z3_mk_int(ctx, 5, int_sort);
+				Z3_ast six  = Z3_mk_int(ctx, 6, int_sort);
+				Z3_ast ten  = Z3_mk_int(ctx, 10, int_sort);
+
+	//mk set sort
+		Z3_sort place_set_sort = Z3_mk_set_sort(ctx, int_sort);
+				//the above int_sort is the place type, it can be expand into another tuple sort to represent place type
+	//mk tuple
+				Z3_ast mk_tuple_name = Z3_mk_string_symbol(ctx, "mk_nets_state");
+				Z3_func_decl proj_names[3];
+				proj_names[0] = Z3_mk_string_symbol(ctx, "place0");
+				proj_names[1] = Z3_mk_string_symbol(ctx, "place1");
+				proj_names[2] = Z3_mk_string_symbol(ctx, "place2");
+				Z3_func_decl proj_sorts[3];
+				proj_sorts[0] = place_set_sort;
+				proj_sorts[1] = place_set_sort;
+				proj_sorts[2] = place_set_sort;
+				Z3_func_decl mk_tuple_decl;
+				Z3_func_decl proj_decls[3];
+				Z3_ast	nets_state_sort = Z3_mk_tuple_sort(ctx, mk_tuple_name, 3,
+						proj_names, proj_sorts, &mk_tuple_decl, proj_decls);
+				Z3_ast net = mk_var(ctx, "net", nets_state_sort);
+				Z3_ast Phil = mk_unary_app(ctx, proj_decls[0], net);//proj0(net)
+				Z3_ast Chop = mk_unary_app(ctx, proj_decls[1], net);//proj1(net)
+				Z3_ast Eat = mk_unary_app(ctx, proj_decls[2], net);//proj1(net)
+
+				Z3_ast ini_and[10] = {
+						Z3_mk_eq(ctx, Z3_mk_set_member(ctx, one, Phil), Z3_mk_true(ctx)),
+						Z3_mk_eq(ctx, Z3_mk_set_member(ctx, two, Phil), Z3_mk_true(ctx)),
+						Z3_mk_eq(ctx, Z3_mk_set_member(ctx, three, Phil), Z3_mk_true(ctx)),
+						Z3_mk_eq(ctx, Z3_mk_set_member(ctx, four, Phil), Z3_mk_true(ctx)),
+						Z3_mk_eq(ctx, Z3_mk_set_member(ctx, five, Phil), Z3_mk_true(ctx)),
+
+						Z3_mk_eq(ctx, Z3_mk_set_member(ctx, one, Chop), Z3_mk_true(ctx)),
+						Z3_mk_eq(ctx, Z3_mk_set_member(ctx, two, Chop), Z3_mk_true(ctx)),
+						Z3_mk_eq(ctx, Z3_mk_set_member(ctx, three, Chop), Z3_mk_true(ctx)),
+						Z3_mk_eq(ctx, Z3_mk_set_member(ctx, four, Chop), Z3_mk_true(ctx)),
+						Z3_mk_eq(ctx, Z3_mk_set_member(ctx, five, Chop), Z3_mk_true(ctx))
+				};
+
+				Z3_ast initial_state = Z3_mk_and(ctx, 10, ini_and);
+				Z3_ast add_Phil = Z3_mk_set_add(ctx, Phil, six);
+				Z3_ast del_Phil = Z3_mk_set_del(ctx, add_Phil, six);
+
+//				Z3_assert_cnstr(ctx, Z3_mk_eq(ctx, Z3_mk_set_add(ctx, add_Phil, six), Z3_mk_true(ctx)));
+
+				Z3_assert_cnstr(ctx, Z3_mk_eq(ctx, Z3_mk_set_member(ctx, six, del_Phil), Z3_mk_true(ctx)));
+
+				//if 3 in Phil, 3 and 4 in Chop, then add to Eat, delete 3 in Phil, delete 3, 4 in Chop
+//				Z3_ast cond = Z3_mk_set_member(ctx, three, Phil)
 }
 int main() {
 #ifdef LOG_Z3_CALLS
     Z3_open_log("z3.log");
 #endif
-//    array_example3();
 //    Z3_config cfg = Z3_mk_config();
 //    Z3_set_param_value(cfg, "MODEL", "true");
     		Z3_config  cfg;
@@ -1414,9 +1747,8 @@ int main() {
          	cfg = Z3_mk_config();
            Z3_set_param_value(cfg, "MODEL", "true");
            ctx = mk_context_custom(cfg, error_handler);
-
-           list_framework_Feb5th(ctx);
-//           fib(ctx);
+           Feb12th_NewFramework(ctx);
+//           testSet(ctx);
     //check context satisfaction
     check(ctx, Z3_L_TRUE);
 
